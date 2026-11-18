@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlaCar — Intercity ride sharing in Pakistan</title>
+<meta name="description" content="BlaCar connects travellers with verified drivers for intercity rides in Pakistan. Fair per-kilometre prices, ladies-only rides, live trip sharing for your family, Urdu and English.">
+<meta property="og:title" content="BlaCar — Travel together, the easy way">
+<meta property="og:description" content="Verified drivers, fair per-kilometre fares, ladies-only rides and live trip sharing. Intercity rides across 112 cities in Pakistan.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0A5F4F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FFB020'/%3E%3Cpath d='M14 38l6-14h24l6 14v10H14z' fill='%2314231F'/%3E%3Ccircle cx='22' cy='46' r='5' fill='%23FFB020'/%3E%3Ccircle cx='42' cy='46' r='5' fill='%23FFB020'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0A5F4F; --green-2:#0E7A66; --green-soft:#E2F1EB; --amber:#FFB020; --amber-ink:#7A4B00;
+    --ink:#14231F; --ink-soft:#55655F; --paper:#F7F5EF; --surface:#FFFFFF; --line:#E6E9E6;
+    --radius:20px; --shadow:0 18px 50px rgba(10,95,79,.14); --shadow-sm:0 6px 18px rgba(20,35,31,.08);
+    --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --font-ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  html.ur body{font-family:var(--font-ur);line-height:2}
+  html.ur{direction:rtl}
+  html.ur .num,html.ur .latin{font-family:var(--font);direction:ltr;unicode-bidi:isolate;line-height:1.3}
+  a{color:var(--green)}
+  img{max-width:100%}
+  .wrap{width:min(1140px,calc(100% - 40px));margin:0 auto}
+  h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em}
+  /* Urdu type scale: Nastaliq is taller and wider than Latin, so every size steps down and line heights open up. */
+  html.ur h1,html.ur h2,html.ur h3{letter-spacing:0;line-height:1.85;font-weight:700}
+  html.ur h1{font-size:clamp(30px,4.2vw,50px)}
+  html.ur h2{font-size:clamp(24px,2.8vw,34px)}
+  html.ur h3{font-size:18px}
+  html.ur .lead{font-size:17px;line-height:2}
+  html.ur p,html.ur li,html.ur summary{font-size:15px}
+  html.ur .card p,html.ur .step p,html.ur .faq details p,html.ur .li span,html.ur .note{font-size:14px;line-height:2}
+  html.ur .stat span,html.ur .chip,html.ur .badge,html.ur .links a,html.ur .btn{font-size:14px}
+  html.ur .eyebrow{font-size:14px;letter-spacing:0;text-transform:none}
+  html.ur .faq summary{font-size:16px;padding:14px 0}
+  html.ur .s-head,html.ur .s-card,html.ur .s-trip,html.ur .s-tabs{font-family:var(--font)}
+  html.ur .sec-head{margin-bottom:32px}
+  h1{font-size:clamp(36px,5.4vw,64px);font-weight:800}
+  h2{font-size:clamp(28px,3.6vw,42px);font-weight:800}
+  h3{font-size:19px;font-weight:700}
+  p{margin:0}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+  html.ur .eyebrow{letter-spacing:0;text-transform:none;font-size:15px}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--amber);border-radius:2px}
+  .lead{font-size:18px;color:var(--ink-soft);max-width:60ch}
+  section{padding:96px 0}
+  @media (max-width:720px){section{padding:64px 0}}
+
+  /* Buttons */
+  .btn{--bg:var(--amber);--fg:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--bg);color:var(--fg);font:inherit;font-weight:700;text-decoration:none;border:0;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(20,35,31,.18)}
+  .btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s ease}
+  .btn:hover::after{transform:translateX(120%)}
+  .btn.ghost{--bg:rgba(255,255,255,.12);--fg:#fff;border:1.5px solid rgba(255,255,255,.4)}
+  .btn.green{--bg:var(--green);--fg:#fff}
+  .btn.outline{--bg:transparent;--fg:var(--green);border:1.5px solid var(--green)}
+
+  /* Nav */
+  .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,95,79,.82);color:#fff;transition:background .3s}
+  .nav.solid{background:rgba(10,95,79,.96);box-shadow:0 6px 24px rgba(0,0,0,.18)}
+  .nav .wrap{display:flex;align-items:center;gap:20px;min-height:68px}
+  .brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:#fff;text-decoration:none;font-family:var(--font)}
+  .logo{width:38px;height:38px;border-radius:11px;background:var(--amber);display:grid;place-items:center;flex:none}
+  .logo svg{width:24px;height:24px}
+  .links{display:flex;gap:26px;margin-inline-start:auto}
+  .links a{color:#fff;text-decoration:none;font-weight:600;font-size:15px;opacity:.9;position:relative}
+  .links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--amber);transform:scaleX(0);transition:transform .25s;transform-origin:left}
+  .links a:hover::after{transform:scaleX(1)}
+  .lang{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:3px;gap:2px}
+  .lang button{border:0;background:transparent;color:#fff;font:inherit;font-weight:700;font-size:13px;padding:8px 14px;border-radius:999px;cursor:pointer;font-family:var(--font)}
+  .lang button.ur{font-family:var(--font-ur);font-size:14px;line-height:1.3}
+  .lang button.on{background:var(--amber);color:var(--ink)}
+  .burger{display:none;margin-inline-start:auto;background:transparent;border:0;color:#fff;cursor:pointer;padding:8px}
+  @media (max-width:900px){
+    .links{display:none;position:absolute;top:68px;left:0;right:0;background:var(--green);flex-direction:column;padding:16px 20px 20px;gap:14px}
+    .links.open{display:flex}
+    .burger{display:inline-flex}
+    .nav .nav-cta{display:none}
+  }
+
+  /* Hero */
+  .hero{position:relative;background:radial-gradient(1200px 600px at 10% -10%,#0E7A66 0%,var(--green) 55%,#07483C 100%);color:#fff;overflow:hidden;padding:72px 0 0}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.55;animation:drift 14s ease-in-out infinite alternate}
+  .hero::before{width:420px;height:420px;right:-120px;top:-140px;background:radial-gradient(circle,var(--amber) 0%,rgba(255,176,32,0) 70%)}
+  .hero::after{width:520px;height:520px;left:-200px;bottom:-260px;background:radial-gradient(circle,#15987F 0%,rgba(21,152,127,0) 70%);animation-delay:-6s}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.12)}}
+  .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .hero h1 .hl{position:relative;display:inline-block;isolation:isolate}
+  .hero h1 .hl::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.22em;background:var(--amber);opacity:.85;border-radius:.1em;z-index:-1;transform:scaleX(0);transform-origin:left;animation:underline 1s .6s ease forwards}
+  @keyframes underline{to{transform:scaleX(1)}}
+  .hero .lead{color:rgba(255,255,255,.86);margin:20px 0 28px}
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600}
+  .chip svg{width:16px;height:16px;color:var(--amber)}
+  .hero-art{position:relative;min-height:560px;display:grid;place-items:center}
+  .rise{opacity:0;transform:translateY(24px);animation:rise .8s ease forwards}
+  .rise.d1{animation-delay:.15s}.rise.d2{animation-delay:.3s}.rise.d3{animation-delay:.45s}.rise.d4{animation-delay:.6s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* Phone mock-up */
+  .phone{width:300px;height:600px;border-radius:44px;background:#0b1512;padding:12px;box-shadow:0 40px 80px rgba(0,0,0,.45),inset 0 0 0 2px #2a3a35;position:relative;animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(-1deg)}}
+  .phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#0b1512;border-radius:12px;z-index:3}
+  .screen{position:relative;height:100%;border-radius:34px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;font-family:var(--font);direction:ltr}
+  .s-head{background:var(--green);color:#fff;padding:54px 18px 70px;position:relative}
+  .s-head .hi{font-size:12px;opacity:.85}
+  .s-head .q{font-size:22px;font-weight:800;margin-top:2px}
+  .s-sun{position:absolute;right:26px;top:48px;width:44px;height:44px;border-radius:50%;background:var(--amber)}
+  .s-card{margin:-52px 14px 0;background:#fff;border-radius:18px;padding:12px;box-shadow:var(--shadow-sm);position:relative}
+  .s-field{background:var(--paper);border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .s-field .dot{width:10px;height:10px;border-radius:50%;background:var(--green)}
+  .s-field .pin{width:10px;height:10px;border-radius:50% 50% 50% 0;background:var(--amber);transform:rotate(-45deg)}
+  .s-field small{display:block;font-size:10px;color:var(--ink-soft)}
+  .s-field b{font-size:13px}
+  .s-days{display:flex;gap:6px;margin:4px 0 10px}
+  .s-days span{font-size:11px;border:1.5px solid var(--line);border-radius:999px;padding:4px 10px}
+  .s-days span.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .s-btn{background:var(--amber);border-radius:999px;text-align:center;font-weight:800;font-size:13px;padding:11px}
+  .s-trip{margin:14px 14px 0;background:#fff;border-radius:16px;padding:12px;box-shadow:var(--shadow-sm);display:flex;justify-content:space-between;align-items:center;opacity:0;animation:rise .6s 1.4s ease forwards}
+  .s-trip b{font-size:14px}.s-trip small{font-size:10px;color:var(--ink-soft);display:block}
+  .s-trip .price{color:var(--green);font-weight:800;font-size:16px}
+  .s-road{position:absolute;left:-30px;right:-30px;bottom:92px;height:40px;background:#0D6E5C;transform:rotate(-7deg);border-radius:20px}
+  .s-road::after{content:"";position:absolute;left:20px;right:20px;top:50%;border-top:3px dashed rgba(255,255,255,.7)}
+  .s-car{position:absolute;bottom:112px;left:-60px;width:44px;height:26px;animation:drive 5s linear infinite}
+  .s-car .b{position:absolute;left:0;top:8px;width:44px;height:16px;border-radius:7px;background:var(--amber)}
+  .s-car .t{position:absolute;left:9px;top:0;width:24px;height:12px;border-radius:5px;background:var(--amber)}
+  .s-car .w{position:absolute;bottom:-4px;width:10px;height:10px;border-radius:50%;background:var(--ink)}
+  @keyframes drive{0%{transform:translate(-20px,30px) rotate(-7deg)}100%{transform:translate(360px,-14px) rotate(-7deg)}}
+  .s-tabs{margin-top:auto;display:flex;justify-content:space-around;padding:10px 6px 14px;background:#fff;border-top:1px solid var(--line);font-size:9px;color:var(--ink-soft)}
+  .s-tabs span{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .s-tabs i{width:16px;height:16px;border-radius:5px;background:var(--line)}
+  .s-tabs span.on{color:var(--green);font-weight:700}.s-tabs span.on i{background:var(--green)}
+  .badge{position:absolute;background:#fff;color:var(--ink);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;font-size:13px;font-weight:700;opacity:0;animation:rise .7s ease forwards;white-space:nowrap}
+  .badge .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+  .badge small{display:block;font-weight:500;color:var(--ink-soft);font-size:11px}
+  .badge.b1{top:60px;left:-30px;animation-delay:1s;--bob:1}
+  .badge.b2{bottom:120px;right:-24px;animation-delay:1.5s}
+  .badge.b3{top:290px;right:-50px;animation-delay:2s}
+  .bob{animation:rise .7s ease forwards,bob 5s 2s ease-in-out infinite}
+  @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -8px}}
+  @media (max-width:900px){
+    .hero{padding-top:48px}.hero .wrap{grid-template-columns:1fr;gap:28px}
+    .hero-art{min-height:520px;transform:scale(.9);transform-origin:top center;margin-bottom:-40px}
+    .badge.b3{display:none}.badge.b1{left:0}.badge.b2{right:0}
+  }
+
+  /* Marquee */
+  .marquee{background:var(--ink);color:#fff;overflow:hidden;padding:14px 0;border-top:3px solid var(--amber)}
+  .track{display:flex;gap:40px;width:max-content;animation:scroll 40s linear infinite;font-weight:700;font-size:15px;direction:ltr}
+  .track span{display:inline-flex;align-items:center;gap:14px;opacity:.9;font-family:var(--font)}
+  .track span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* Stats */
+  .stats{padding:40px 0 0}
+  .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .stat{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);text-align:center;border:1px solid var(--line)}
+  .stat b{display:block;font-size:32px;font-weight:800;color:var(--green);letter-spacing:-.02em;line-height:1.1}
+  .stat b span{font-size:inherit;color:inherit;font-weight:inherit}
+  .stat b .sep{margin:0 4px;opacity:.8}
+  .stat b .unit{font-size:.7em;margin-inline-start:2px}
+  .stat span{color:var(--ink-soft);font-size:14px;font-weight:600}
+  @media (max-width:720px){.stats .wrap{grid-template-columns:1fr 1fr;gap:12px}.stat b{font-size:28px}}
+
+  /* Cards */
+  .grid{display:grid;gap:20px}
+  .grid.c3{grid-template-columns:repeat(3,1fr)}
+  .grid.c2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:900px){.grid.c3{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.grid.c3,.grid.c2{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:transform .25s ease,box-shadow .25s ease,border-color .25s}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:transparent}
+  .ic-box{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin-bottom:18px;background:var(--green-soft);color:var(--green)}
+  .ic-box.amber{background:#FFF1D6;color:var(--amber-ink)}
+  .ic-box svg{width:26px;height:26px}
+  .card h3{margin-bottom:8px}
+  .card p{color:var(--ink-soft);font-size:15px}
+  .sec-head{max-width:720px;margin-bottom:44px}
+  .sec-head h2{margin:12px 0 14px}
+
+  /* Reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}.reveal.d5{transition-delay:.5s}
+
+  /* How it works */
+  .how{background:var(--surface)}
+  .tabs{display:inline-flex;background:var(--paper);border-radius:999px;padding:4px;gap:4px;margin-bottom:36px}
+  .tabs button{border:0;background:transparent;font:inherit;font-weight:700;padding:10px 22px;border-radius:999px;cursor:pointer;color:var(--ink-soft);transition:all .2s}
+  .tabs button.on{background:var(--green);color:#fff}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative}
+  .steps::before{content:"";position:absolute;top:34px;left:12%;right:12%;border-top:2px dashed var(--line);z-index:0}
+  .step{position:relative;z-index:1;background:var(--surface);padding:0 8px}
+  .step .n{width:68px;height:68px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:24px;margin-bottom:18px;box-shadow:0 10px 24px rgba(10,95,79,.3);font-family:var(--font)}
+  .step h3{margin-bottom:8px}.step p{color:var(--ink-soft);font-size:15px}
+  .pane{display:none}.pane.on{display:block;animation:rise .5s ease}
+  @media (max-width:760px){.steps{grid-template-columns:1fr}.steps::before{display:none}}
+
+  /* Pricing */
+  .pricing{background:linear-gradient(180deg,var(--paper),#EEF4F0)}
+  .calc{background:var(--surface);border-radius:28px;border:1px solid var(--line);box-shadow:var(--shadow);padding:32px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+  @media (max-width:860px){.calc{grid-template-columns:1fr;padding:24px}}
+  .range{margin-top:22px}
+  .range label{display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:8px}
+  .range output{color:var(--green);font-family:var(--font)}
+  input[type=range]{width:100%;accent-color:var(--green);height:6px}
+  .route-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .route-pick button{border:1.5px solid var(--line);background:#fff;font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;transition:all .2s;font-family:var(--font)}
+  .route-pick button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .fare{background:var(--green);color:#fff;border-radius:22px;padding:28px;position:relative;overflow:hidden}
+  .fare::after{content:"";position:absolute;width:220px;height:220px;right:-70px;top:-90px;border-radius:50%;background:rgba(255,176,32,.25)}
+  .fare .row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.18);position:relative;z-index:1}
+  .fare .row:last-child{border:0}
+  .fare .row b{font-size:26px;font-family:var(--font)}
+  .fare .row.total b{font-size:36px;color:var(--amber)}
+  .fare .row span{opacity:.9;font-size:14px}
+  .note{font-size:13px;color:var(--ink-soft);margin-top:14px}
+
+  /* Safety */
+  .safety .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  @media (max-width:860px){.safety .wrap{grid-template-columns:1fr}}
+  .list{display:grid;gap:14px;margin-top:28px}
+  .li{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .li .ic-box{margin:0;width:44px;height:44px;border-radius:12px;flex:none}
+  .li b{display:block;margin-bottom:2px}.li span{color:var(--ink-soft);font-size:14px}
+  .track-card{background:var(--ink);color:#fff;border-radius:28px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:380px;direction:ltr;font-family:var(--font)}
+  .map{position:absolute;inset:0;background:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px) 0 0/40px 40px,#1a2b26}
+  .path{position:absolute;left:10%;right:10%;top:52%;border-top:4px dashed rgba(255,176,32,.6)}
+  .pt{position:absolute;top:52%;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #fff}
+  .pt.a{left:10%;background:var(--green)}.pt.b{left:90%;background:#B42318}
+  .car2{position:absolute;top:52%;left:10%;width:40px;height:40px;border-radius:50%;background:var(--amber);border:3px solid #fff;transform:translate(-50%,-50%);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(255,176,32,.25);animation:go 7s ease-in-out infinite}
+  @keyframes go{0%{left:10%}60%{left:90%}100%{left:90%}}
+  .car2 svg{width:20px;height:20px}
+  .tc-top{position:relative;z-index:1}
+  .tc-top b{font-size:20px}.tc-top small{display:block;opacity:.8}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--green-soft);color:var(--green);font-weight:800;font-size:12px;padding:6px 12px;border-radius:999px;margin-top:10px}
+  .pill i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(10,95,79,.5)}100%{box-shadow:0 0 0 10px rgba(10,95,79,0)}}
+  .tc-bottom{position:absolute;left:24px;right:24px;bottom:24px;background:#fff;color:var(--ink);border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center}
+  .tc-bottom b{font-size:18px}.tc-bottom small{color:var(--ink-soft)}
+
+  /* Drivers */
+  .drivers{background:var(--ink);color:#fff}
+  .drivers .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  @media (max-width:860px){.drivers .wrap{grid-template-columns:1fr}}
+  .drivers .eyebrow{color:var(--amber)}
+  .drivers .lead{color:rgba(255,255,255,.8)}
+  .drivers .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#fff}
+  .drivers .card p{color:rgba(255,255,255,.75)}
+  .drivers .ic-box{background:rgba(255,176,32,.18);color:var(--amber)}
+  .earn{background:#fff;color:var(--ink);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+  .earn .big{font-size:44px;font-weight:800;color:var(--green);font-family:var(--font);letter-spacing:-.02em}
+  .earn .bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;margin:12px 0 6px}
+  .earn .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--amber));transition:width 1.4s ease}
+  .in .earn .bar i{width:78%}
+
+  /* FAQ */
+  .faq details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:0 22px;margin-bottom:12px;transition:box-shadow .2s}
+  .faq details[open]{box-shadow:var(--shadow-sm)}
+  .faq summary{cursor:pointer;list-style:none;font-weight:700;padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:22px;color:var(--green);transition:transform .25s;font-family:var(--font)}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq details p{color:var(--ink-soft);padding:0 0 18px;font-size:15px}
+
+  /* CTA */
+  .cta{padding:0 0 96px}
+  .cta .box{background:radial-gradient(800px 400px at 80% 0%,#0E7A66,var(--green) 60%);color:#fff;border-radius:32px;padding:56px;display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;position:relative;overflow:hidden}
+  .cta .box::after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,176,32,.22);right:-80px;bottom:-140px}
+  .cta h2{color:#fff}
+  .cta .lead{color:rgba(255,255,255,.85)}
+  .cta .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+  .store{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:10px 16px;font-weight:700;text-decoration:none;font-size:14px;opacity:.6;cursor:default}
+  .store small{display:block;font-weight:500;font-size:11px;color:var(--ink-soft)}
+  @media (max-width:860px){.cta .box{grid-template-columns:1fr;padding:36px 24px}}
+
+  footer{padding:36px 0 48px;color:var(--ink-soft);font-size:14px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  footer a{color:var(--ink-soft);text-decoration:none;margin-inline-start:18px;font-weight:600}
+  footer a:hover{color:var(--green)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .reveal{opacity:1;transform:none}.rise{opacity:1;transform:none}.badge{opacity:1}.s-trip{opacity:1}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="BlaCar home">
+      <span class="logo"><svg viewBox="0 0 64 64" fill="none"><path d="M14 38l6-14h24l6 14v10H14z" fill="#14231F"/><circle cx="22" cy="46" r="5" fill="#FFB020"/><circle cx="42" cy="46" r="5" fill="#FFB020"/></svg></span>
+      BlaCar
+    </a>
+    <div class="links" id="links">
+      <a href="#features" data-ur="خصوصیات">Features</a>
+      <a href="#how" data-ur="طریقہ">How it works</a>
+      <a href="#pricing" data-ur="کرایہ">Pricing</a>
+      <a href="#safety" data-ur="حفاظت">Safety</a>
+      <a href="#drivers" data-ur="ڈرائیورز">Drivers</a>
+      <a href="#faq" data-ur="سوالات">FAQ</a>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" class="on" data-lang="en">English</button>
+      <button type="button" class="ur" data-lang="ur">اردو</button>
+    </div>
+    <a class="btn nav-cta" href="#get" data-ur="ایپ حاصل کریں">Get the app</a>
+    <button class="burger" id="burger" aria-label="Menu"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow rise" style="color:var(--amber)" data-ur="پاکستان میں انٹرسٹی رائیڈ شیئرنگ">Intercity ride sharing in Pakistan</span>
+      <h1 class="rise d1" data-ur="مل کر سفر کریں،<br>آسانی کے ساتھ۔">Travel together,<br><span class="hl">the easy way.</span></h1>
+      <p class="lead rise d2" data-ur="112 شہروں کے درمیان تصدیق شدہ ڈرائیوروں کے ساتھ سیٹ بک کریں۔ فی کلومیٹر شفاف کرایہ، صرف خواتین کے سفر، اور گھر والوں کے لیے لائیو ٹرپ لنک۔ واٹس ایپ گروپس کی ضرورت نہیں۔">Book a seat with verified drivers between 112 cities. Transparent per-kilometre fares, ladies-only rides, and a live trip link for your family. No more WhatsApp groups.</p>
+      <div class="hero-ctas rise d3">
+        <a class="btn" href="#get" data-ur="اینڈرائیڈ ایپ حاصل کریں">Get the Android app <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn ghost" href="#how" data-ur="یہ کیسے کام کرتا ہے">See how it works</a>
+      </div>
+      <div class="chips rise d4">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3zm-1 13.6l5.3-5.3-1.4-1.4L11 12.8l-1.9-1.9-1.4 1.4L11 15.6z"/></svg><span data-ur="تصدیق شدہ ڈرائیور">Verified drivers</span></span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 110 8 4 4 0 010-8zm-6 18a6 6 0 1112 0H6z"/></svg><span data-ur="صرف خواتین کے سفر">Ladies-only rides</span></span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.3 8 12 8 12s8-6.7 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg><span data-ur="لائیو ٹریکنگ">Live tracking</span></span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v12H7l-3 3V4z"/></svg><span data-ur="اردو اور انگریزی">Urdu and English</span></span>
+      </div>
+    </div>
+    <div class="hero-art rise d2">
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="s-head"><div class="s-sun"></div><div class="hi">Welcome, Ayesha</div><div class="q">Where are you going?</div></div>
+          <div class="s-card">
+            <div class="s-field"><span class="dot"></span><div><small>From</small><b>Lahore</b></div></div>
+            <div class="s-field"><span class="pin"></span><div><small>To</small><b>Jhang</b></div></div>
+            <div class="s-days"><span class="on">Today</span><span>Tomorrow</span><span>Pick date</span></div>
+            <div class="s-btn">Find a ride</div>
+          </div>
+          <div class="s-trip"><div><b>2:00 PM · Thokar</b><small>Bilal · Suzuki Cultus · AC</small></div><div class="price">Rs 2,530</div></div>
+          <div class="s-road"></div>
+          <div class="s-car"><div class="t"></div><div class="b"></div><div class="w" style="left:6px"></div><div class="w" style="right:6px"></div></div>
+          <div class="s-tabs"><span class="on"><i></i>Search</span><span><i></i>My trips</span><span><i></i>Alerts</span><span><i></i>Profile</span></div>
+        </div>
+      </div>
+      <div class="badge b1 bob"><span class="ic" style="background:var(--green-soft);color:var(--green)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><div><span data-ur="سیٹ کنفرم">Seat confirmed</span><small data-ur="رابطہ نمبر کھل گئے">Contact details unlocked</small></div></div>
+      <div class="badge b2 bob" style="animation-delay:1.5s,3s"><span class="ic" style="background:#FFF1D6;color:var(--amber-ink)"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.3 8 12 8 12s8-6.7 8-12c0-4.4-3.6-8-8-8z"/></svg></span><div><span data-ur="ڈرائیور قریب ہے">Driver is near</span><small data-ur="پک اپ سے 2 کلومیٹر">2 km from your pickup</small></div></div>
+      <div class="badge b3 bob" style="animation-delay:2s,4s"><span class="ic" style="background:#E8EEFF;color:#2E4BB8"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3z"/></svg></span><div><span data-ur="بحفاظت پہنچ گئی">Reached safely</span><small data-ur="گھر والوں کو اطلاع مل گئی">Family notified</small></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="track" id="track"></div>
+</div>
+
+<section class="stats">
+  <div class="wrap">
+    <div class="stat reveal"><b class="num" data-count="112">0</b><span data-ur="شہر">cities</span></div>
+    <div class="stat reveal d1"><b class="num"><span data-count="8">0</span><span class="sep">–</span><span data-count="14">0</span></b><span data-ur="روپے فی سیٹ-کلومیٹر، ڈرائیور چنتا ہے">Rs per seat-km, driver's choice</span></div>
+    <div class="stat reveal d2"><b class="num"><span data-count="10">0</span><span class="unit">%</span></b><span data-ur="سروس فیس، اس سے زیادہ کچھ نہیں">service fee, nothing hidden</span></div>
+    <div class="stat reveal d3"><b class="num"><span data-count="2">0</span></b><span data-ur="زبانیں: اردو اور انگریزی">languages, Urdu and English</span></div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow" data-ur="آپ کو کیا ملتا ہے">What you get</span>
+      <h2 data-ur="پاکستان کے لمبے سفر کے لیے بنائی گئی ایپ">Built for long rides across Pakistan</h2>
+      <p class="lead" data-ur="ہر چیز جو آپ کو ایک اجنبی کے ساتھ 200 کلومیٹر سفر کرنے کے لیے چاہیے، بغیر کسی اندازے کے۔">Everything you need to share a 200 km ride with someone you have never met, without guesswork.</p>
+    </div>
+    <div class="grid c3">
+      <div class="card reveal"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3zm-1 13.6l5.3-5.3-1.4-1.4L11 12.8l-1.9-1.9-1.4 1.4L11 15.6z"/></svg></div><h3 data-ur="تصدیق شدہ ڈرائیور">Verified drivers</h3><p data-ur="ہر ڈرائیور شناختی کارڈ، لائسنس اور سیلفی کیمرے سے براہِ راست اسکین کرتا ہے (گیلری سے اپ لوڈ نہیں) اور ہماری ٹیم منظوری دیتی ہے۔">Every driver scans their CNIC, licence and a live selfie with the camera, never a gallery upload, and is approved by our team before posting a ride.</p></div>
+      <div class="card reveal d1"><div class="ic-box amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v2H3zm2 4h14l1 9H4l1-9zm4 2v5h2v-5H9zm4 0v5h2v-5h-2z"/></svg></div><h3 data-ur="شفاف کرایہ">Fair, transparent fares</h3><p data-ur="ڈرائیور 8 سے 14 روپے فی کلومیٹر کا ریٹ چنتا ہے۔ قیمت اصل سڑک کے فاصلے سے بنتی ہے، اور آپ کو جو دکھے وہی ادا کریں۔">Drivers pick a rate of Rs 8 to 14 per km. The price comes from the real road distance of the route, and what you see is what you pay.</p></div>
+      <div class="card reveal d2"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 110 8 4 4 0 010-8zm-6 18a6 6 0 1112 0H6z"/></svg></div><h3 data-ur="صرف خواتین کے سفر">Ladies-only rides</h3><p data-ur="خواتین ڈرائیور ایسے سفر پوسٹ کر سکتی ہیں جن میں صرف خواتین مسافر ہوں۔ یہ اصول سرور پر نافذ ہے، درخواست پر نہیں۔">Women drivers can post rides reserved for women passengers. The rule is enforced by the server, not by request.</p></div>
+      <div class="card reveal"><div class="ic-box amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6h-4v6H5a1 1 0 01-1-1v-9z"/></svg></div><h3 data-ur="فیملی سرکل">Family Circle</h3><p data-ur="سفر شروع ہوتے ہی آپ کے بھروسے والے شخص کو لائیو لنک ملتا ہے۔ وہ دیکھتے ہیں کہ آپ قریب ہیں اور کب پہنچے، اس سے زیادہ کچھ نہیں۔">The moment a trip starts, your trusted contact gets a live link. They see when you are near and when you arrive, nothing more.</p></div>
+      <div class="card reveal d1"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v12H7l-3 3V4zm3 4v2h10V8H7zm0 4v2h7v-2H7z"/></svg></div><h3 data-ur="نجی چیٹ">Private chat</h3><p data-ur="ہر بکنگ کی ایک الگ چیٹ، قبولیت کے بعد کھلتی ہے۔ فون نمبر صرف تب شیئر ہوتے ہیں جب ڈرائیور درخواست قبول کرے۔">One private thread per booking, open once the request is accepted. Phone numbers are shared only after the driver says yes.</p></div>
+      <div class="card reveal d2"><div class="ic-box amber"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.3 8 12 8 12s8-6.7 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg></div><h3 data-ur="راستے کا حصہ بک کریں">Book part of a route</h3><p data-ur="لاہور سے جھنگ جانے والی گاڑی فیصل آباد سے بھی گزرتی ہے؟ صرف اپنا حصہ بک کریں اور صرف اس فاصلے کا کرایہ دیں۔">Driver going Lahore to Jhang via Faisalabad? Book just your leg and pay only for that distance.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow" data-ur="طریقہ">How it works</span>
+      <h2 data-ur="تین قدم، بس">Three steps, that is all</h2>
+    </div>
+    <div class="tabs reveal" role="tablist">
+      <button class="on" data-pane="traveler" data-ur="میں مسافر ہوں">I'm a traveler</button>
+      <button data-pane="driver" data-ur="میں ڈرائیور ہوں">I'm a driver</button>
+    </div>
+    <div class="pane on" id="pane-traveler">
+      <div class="steps">
+        <div class="step reveal"><div class="n">1</div><h3 data-ur="تلاش کریں">Search</h3><p data-ur="شہر اور تاریخ چنیں۔ ہر سفر کی قیمت، گاڑی، ڈرائیور کا ریٹنگ اور خالی سیٹیں دیکھیں۔">Pick your cities and date. See each ride's price, car, driver rating and free seats.</p></div>
+        <div class="step reveal d1"><div class="n">2</div><h3 data-ur="سیٹ کی درخواست کریں">Request a seat</h3><p data-ur="درج قیمت پر درخواست بھیجیں، یا کم قیمت کی پیشکش کریں۔ ڈرائیور قبول کرتا ہے تو سیٹ کنفرم اور نمبر کھل جاتے ہیں۔">Send a request at the listed price, or propose a lower fare. When the driver accepts, your seat is confirmed and contact details unlock.</p></div>
+        <div class="step reveal d2"><div class="n">3</div><h3 data-ur="سفر کریں، گھر والوں کو ساتھ رکھیں">Ride, with family watching</h3><p data-ur="لائیو لنک شیئر کریں، پہنچنے پر ایک ٹیپ سے بتائیں، اور ڈرائیور کو ریٹ کریں۔">Share the live link, confirm your arrival with one tap, and rate the driver.</p></div>
+      </div>
+    </div>
+    <div class="pane" id="pane-driver">
+      <div class="steps">
+        <div class="step reveal in"><div class="n">1</div><h3 data-ur="ایک بار تصدیق کروائیں">Verify once</h3><p data-ur="شناختی کارڈ، لائسنس اور سیلفی لائیو اسکین کریں، گاڑی کی تفصیل دیں۔ منظوری کے بعد آپ پوسٹ کر سکتے ہیں۔">Scan your CNIC, licence and a live selfie, add your car. Once approved you can post.</p></div>
+        <div class="step reveal in"><div class="n">2</div><h3 data-ur="30 سیکنڈ میں سفر پوسٹ کریں">Post a trip in 30 seconds</h3><p data-ur="راستہ، اسٹاپ، وقت اور فی کلومیٹر ریٹ چنیں۔ ایپ سڑک کا فاصلہ ناپ کر قیمت بتاتی ہے۔">Pick the route, stops, time and your rate per km. The app measures the road distance and shows the price.</p></div>
+        <div class="step reveal in"><div class="n">3</div><h3 data-ur="درخواستیں قبول کریں اور کمائیں">Accept requests and earn</h3><p data-ur="ہر درخواست پر ہاں یا نہ کہیں۔ آپ کو آپ کی مقرر کردہ رقم ملتی ہے؛ سروس فیس مسافر دیتا ہے۔">Say yes or no to each request. You receive the amount you set; the service fee is paid by the traveler.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow" data-ur="کرایہ">Pricing</span>
+      <h2 data-ur="کوئی چھپی ہوئی چیز نہیں۔ خود حساب لگائیں۔">Nothing hidden. Work it out yourself.</h2>
+      <p class="lead" data-ur="قیمت = ڈرائیور کا ریٹ × سڑک کا فاصلہ۔ مسافر اس پر 10% سروس فیس دیتا ہے۔ کم قیمت کی پیشکش ڈرائیور کو جاتی ہے اور صرف آپ کی سیٹ پر لاگو ہوتی ہے۔">Price = driver's rate × road kilometres. The traveler adds a 10% service fee. A lower offer goes to the driver and applies to your seat only.</p>
+    </div>
+    <div class="calc reveal">
+      <div>
+        <b data-ur="راستہ چنیں">Choose a route</b>
+        <div class="route-pick" id="routes"></div>
+        <div class="range">
+          <label><span data-ur="ڈرائیور کا ریٹ فی کلومیٹر">Driver's rate per km</span><output id="rateOut">Rs 10</output></label>
+          <input type="range" id="rate" min="8" max="14" value="10" step="1" aria-label="Rate per km">
+        </div>
+        <div class="range">
+          <label><span data-ur="کم قیمت کی پیشکش (اختیاری)">Lower offer, optional</span><output id="offOut">—</output></label>
+          <input type="range" id="offer" min="50" max="100" value="100" step="5" aria-label="Offer as percent of listed price">
+        </div>
+        <p class="note" data-ur="پیشکش درج قیمت کے کم از کم نصف ہونی چاہیے۔ ڈرائیور اسے قبول یا مسترد کر سکتا ہے؛ دوسرے مسافر درج قیمت ہی دیتے ہیں۔">An offer must be at least half the listed price. The driver accepts or declines it; other travelers still pay the listed price.</p>
+      </div>
+      <div class="fare">
+        <div class="row"><span data-ur="سڑک کا فاصلہ">Road distance</span><b><span id="km">230</span> km</b></div>
+        <div class="row"><span data-ur="ڈرائیور کو ملتا ہے">Driver receives</span><b>Rs <span id="drv">2,300</span></b></div>
+        <div class="row"><span data-ur="سروس فیس (10%)">Service fee (10%)</span><b>Rs <span id="fee">230</span></b></div>
+        <div class="row total"><span data-ur="مسافر ادا کرتا ہے، فی سیٹ">Traveler pays, per seat</span><b>Rs <span id="tot">2,530</span></b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="safety" id="safety">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-ur="حفاظت">Safety</span>
+      <h2 data-ur="اپنے گھر والوں کو ساتھ رکھیں">Made so your family can relax</h2>
+      <p class="lead" style="margin-top:14px" data-ur="ہم نے وہ چیزیں بنائی ہیں جو پاکستانی خاندان کسی کو اکیلے سفر پر بھیجتے وقت پوچھتے ہیں۔">We built the things Pakistani families ask about before letting someone travel alone.</p>
+      <div class="list">
+        <div class="li reveal"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor" width="22"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3z"/></svg></div><div><b data-ur="شناخت کی لائیو تصدیق">Live identity checks</b><span data-ur="دستاویزات اور چہرہ کیمرے سے براہِ راست، کوئی پرانی تصویر نہیں۔">Documents and face captured live, never an old photo.</span></div></div>
+        <div class="li reveal d1"><div class="ic-box amber"><svg viewBox="0 0 24 24" fill="currentColor" width="22"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.3 8 12 8 12s8-6.7 8-12c0-4.4-3.6-8-8-8z"/></svg></div><div><b data-ur="لائیو ٹریکنگ اور فیملی لنک">Live tracking and family link</b><span data-ur="گاڑی نقشے پر، بغیر ایپ کے بھی، صرف ان لوگوں کے لیے جنہیں آپ لنک دیں۔">The car on a map, no app needed, only for the people you send the link to.</span></div></div>
+        <div class="li reveal d2"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor" width="22"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.25c1.1.37 2.3.57 3.6.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.6a1 1 0 01-.25 1l-2.2 2.2z"/></svg></div><div><b data-ur="ایس او ایس بٹن">SOS to a trusted contact</b><span data-ur="ایک ٹیپ سے آپ کی لائیو لوکیشن آپ کے چنے ہوئے شخص کو جاتی ہے۔">One tap sends your live location to the person you chose.</span></div></div>
+        <div class="li reveal d3"><div class="ic-box amber"><svg viewBox="0 0 24 24" fill="currentColor" width="22"><path d="M12 17.3l6.2 3.7-1.6-7 5.4-4.7-7.2-.6L12 2 9.2 8.7 2 9.3l5.4 4.7-1.6 7z"/></svg></div><div><b data-ur="جائزے اور بلاکنگ">Reviews and blocking</b><span data-ur="ہر سفر کے بعد دونوں طرف ریٹنگ؛ رپورٹ ہونے والے اکاؤنٹ ہماری ٹیم دیکھتی ہے۔">Both sides rate every trip; reported accounts are reviewed by our team.</span></div></div>
+      </div>
+    </div>
+    <div class="track-card reveal d2" aria-hidden="true">
+      <div class="map"></div>
+      <div class="tc-top"><b>Lahore → Jhang</b><small>Ayesha's ride · Suzuki Cultus · Bilal</small><div class="pill"><i></i>LIVE · 84 km/h</div></div>
+      <div class="path"></div><div class="pt a"></div><div class="pt b"></div>
+      <div class="car2"><svg viewBox="0 0 24 24" fill="#14231F"><path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11v6a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1H8v1a1 1 0 01-1 1H6a1 1 0 01-1-1v-6zm2.5 2a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm9 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg></div>
+      <div class="tc-bottom"><div><b>96 km to Jhang</b><small>Updated 3 s ago</small></div><div class="pill" style="margin:0">✓ Near pickup</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="drivers" id="drivers">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-ur="ڈرائیوروں کے لیے">For drivers</span>
+      <h2 data-ur="خالی سیٹیں بھریں، پیٹرول کا خرچ شیئر کریں">Fill your empty seats, share the fuel cost</h2>
+      <p class="lead" style="margin-top:14px" data-ur="آپ پہلے ہی جا رہے ہیں۔ تین خالی سیٹیں ایک لمبے سفر کا خرچ پورا کر سکتی ہیں۔">You are driving anyway. Three empty seats can cover the cost of a long trip.</p>
+      <div class="grid c2" style="margin-top:28px">
+        <div class="card reveal"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8V4l8 8-8 8v-4H4V8z"/></svg></div><h3 data-ur="آپ ریٹ طے کرتے ہیں">You set the rate</h3><p data-ur="8 سے 14 روپے فی کلومیٹر۔ راستہ بدلیں تو قیمت خود بدل جاتی ہے۔">Rs 8 to 14 per km. Change the route and the price follows.</p></div>
+        <div class="card reveal d1"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3z"/></svg></div><h3 data-ur="آپ فیصلہ کرتے ہیں">You decide who rides</h3><p data-ur="ہر درخواست قبول یا مسترد کریں۔ مسافر کا پروفائل اور ریٹنگ پہلے دیکھیں۔">Accept or decline every request after seeing the traveler's profile and rating.</p></div>
+        <div class="card reveal d2"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4zM8 8h8v2H8zm0 4h8v2H8z"/></svg></div><h3 data-ur="اسٹاپ شامل کریں">Add stops on the way</h3><p data-ur="فیصل آباد، گوجرہ، ٹوبہ: راستے کے شہر ٹک کریں اور ہر حصے کی الگ سیٹ بیچیں۔">Tick the cities you pass and sell each leg separately.</p></div>
+        <div class="card reveal d3"><div class="ic-box"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 110 20 10 10 0 010-20zm1 5h-2v6l5 3 1-1.7-4-2.3z"/></svg></div><h3 data-ur="کوئی ماہانہ فیس نہیں">No monthly fee</h3><p data-ur="سروس فیس مسافر دیتا ہے۔ آپ کو آپ کی مقرر کردہ پوری رقم ملتی ہے۔">The service fee is paid by the traveler. You receive the full amount you set.</p></div>
+      </div>
+    </div>
+    <div class="earn reveal d2">
+      <span class="eyebrow" data-ur="مثال">Example</span>
+      <h3 style="margin-top:8px" data-ur="لاہور سے اسلام آباد، 3 مسافر">Lahore to Islamabad, 3 passengers</h3>
+      <p style="color:var(--ink-soft);font-size:14px;margin-top:6px" data-ur="375 کلومیٹر × 10 روپے × 3 سیٹیں">375 km × Rs 10 × 3 seats</p>
+      <div class="big">Rs 11,250</div>
+      <div class="bar"><i></i></div>
+      <p style="font-size:13px;color:var(--ink-soft)" data-ur="ایک طرف کے پیٹرول اور ٹول سے زیادہ، ایک ہی سفر میں۔">More than the fuel and tolls one way, in a single trip.</p>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap" style="max-width:820px">
+    <div class="sec-head reveal">
+      <span class="eyebrow" data-ur="سوالات">Questions</span>
+      <h2 data-ur="اکثر پوچھے جانے والے سوالات">Frequently asked</h2>
+    </div>
+    <details class="reveal"><summary data-ur="کیا یہ مفت ہے؟">Is it free to use?</summary><p data-ur="ایپ مفت ہے۔ مسافر ہر سیٹ پر 10% سروس فیس دیتا ہے جو قیمت میں پہلے سے شامل دکھائی جاتی ہے۔ ڈرائیور کچھ نہیں دیتے۔">The app is free. A traveler pays a 10% service fee per seat, shown inside the price before booking. Drivers pay nothing.</p></details>
+    <details class="reveal"><summary data-ur="کرایہ کیسے ادا ہوتا ہے؟">How do I pay the fare?</summary><p data-ur="فی الحال کرایہ سفر پر دیا جاتا ہے۔ ان ایپ ادائیگی جلد آ رہی ہے اور ایپ میں اعلان کیا جائے گا۔">For now the fare is settled on the trip. In-app payment is coming and will be announced in the app.</p></details>
+    <details class="reveal"><summary data-ur="کیا ڈرائیور میرا نمبر دیکھ سکتا ہے؟">Can the driver see my number?</summary><p data-ur="صرف تب جب وہ آپ کی درخواست قبول کرے۔ اس سے پہلے کوئی نمبر، کوئی پلیٹ، کچھ شیئر نہیں ہوتا۔">Only after accepting your request. Before that no number, no plate, nothing is shared either way.</p></details>
+    <details class="reveal"><summary data-ur="کیا میں کم قیمت مانگ سکتا ہوں؟">Can I ask for a lower price?</summary><p data-ur="ہاں، درج قیمت کے کم از کم نصف تک۔ پیشکش صرف آپ کی سیٹ کے لیے ہے؛ ڈرائیور قبول یا مسترد کرتا ہے۔">Yes, down to half the listed price. The offer is for your seat only; the driver accepts or declines.</p></details>
+    <details class="reveal"><summary data-ur="کون سے شہر؟">Which cities?</summary><p data-ur="پنجاب، سندھ، خیبر پختونخوا، بلوچستان، گلگت بلتستان اور آزاد کشمیر کے 112 شہر۔ ڈرائیور راستے کے چھوٹے شہر بطور اسٹاپ شامل کر سکتے ہیں۔">112 cities across Punjab, Sindh, KP, Balochistan, Gilgit-Baltistan and Azad Kashmir. Drivers add smaller towns on the way as stops.</p></details>
+    <details class="reveal"><summary data-ur="کیا یہ اردو میں ہے؟">Is it in Urdu?</summary><p data-ur="پوری ایپ اردو اور انگریزی میں ہے، صحیح دائیں سے بائیں لے آؤٹ اور نستعلیق فونٹ کے ساتھ۔">The whole app is in Urdu and English, with a proper right-to-left layout and Nastaliq type.</p></details>
+  </div>
+</section>
+
+<section class="cta" id="get">
+  <div class="wrap">
+    <div class="box reveal">
+      <div>
+        <h2 data-ur="آج ہی بلا کار آزمائیں">Try BlaCar today</h2>
+        <p class="lead" style="margin-top:12px" data-ur="اینڈرائیڈ بیٹا جاری ہے۔ گوگل پلے لسٹنگ جلد آ رہی ہے؛ اس وقت تک ہمیں ای میل کریں اور ہم آپ کو ایپ بھیج دیں گے۔">The Android beta is open. The Google Play listing is on its way; until then email us and we send you the app.</p>
+        <div class="btns">
+          <a class="btn" href="mailto:muhammadqasim0802@gmail.com?subject=BlaCar%20app" data-ur="ایپ مانگیں">Request the app</a>
+          <span class="store" title="Coming soon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 3l11 9-11 9V3zm13 7l3 2-3 2v-4z"/></svg><span><small data-ur="جلد آ رہا ہے">Coming soon on</small>Google Play</span></span>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div class="logo" style="width:96px;height:96px;border-radius:28px;margin:0 auto;box-shadow:0 20px 40px rgba(0,0,0,.3)"><svg viewBox="0 0 64 64" fill="none" style="width:60px;height:60px"><path d="M14 38l6-14h24l6 14v10H14z" fill="#14231F"/><circle cx="22" cy="46" r="5" fill="#FFB020"/><circle cx="42" cy="46" r="5" fill="#FFB020"/></svg></div>
+        <p style="margin-top:14px;font-weight:800;font-size:22px">BlaCar</p>
+        <p style="opacity:.8;font-size:14px" data-ur="اینڈرائیڈ 8 اور اس سے اوپر">Android 8 and above</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>&copy; 2026 BlaCar. <span data-ur="جملہ حقوق محفوظ ہیں۔">All rights reserved.</span></div>
+    <div>
+      <a href="privacy.html" data-ur="پرائیویسی پالیسی">Privacy Policy</a>
+      <a href="terms.html" data-ur="شرائط">Terms of Service</a>
+      <a href="mailto:muhammadqasim0802@gmail.com" data-ur="رابطہ">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ROUTES=[["Lahore","Jhang",230],["Lahore","Islamabad",375],["Lahore","Faisalabad",140],["Karachi","Hyderabad",165],["Multan","Bahawalpur",95],["Islamabad","Peshawar",183]];
+  var CITIES=["Lahore","Karachi","Islamabad","Rawalpindi","Faisalabad","Multan","Jhang","Gujranwala","Sialkot","Peshawar","Quetta","Hyderabad","Sukkur","Bahawalpur","Sargodha","Toba Tek Singh","Gojra","Abbottabad","Murree","Mardan","Dera Ghazi Khan","Rahim Yar Khan","Gilgit","Muzaffarabad"];
+
+  // Marquee
+  var track=document.getElementById('track'),html='';
+  for(var r=0;r<2;r++)CITIES.forEach(function(c){html+='<span>'+c+'</span>';});
+  track.innerHTML=html;
+
+  // Nav
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('solid',scrollY>40);},{passive:true});
+  var links=document.getElementById('links');
+  document.getElementById('burger').addEventListener('click',function(){links.classList.toggle('open');});
+  links.addEventListener('click',function(){links.classList.remove('open');});
+
+  // Reveal on scroll
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // Counters
+  var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;cio.unobserve(e.target);var el=e.target,end=+el.dataset.count,t0=null;function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1200);el.textContent=Math.round(end*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);});},{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){cio.observe(el);});
+
+  // Tabs
+  document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');
+    document.querySelectorAll('.pane').forEach(function(p){p.classList.remove('on');});
+    document.getElementById('pane-'+b.dataset.pane).classList.add('on');
+  });});
+
+  // Fare calculator (mirrors the app: rate x road km, rounded to Rs 10, fee 10% of the agreed fare)
+  var routes=document.getElementById('routes'),cur=0,rate=document.getElementById('rate'),offer=document.getElementById('offer');
+  ROUTES.forEach(function(r,i){var b=document.createElement('button');b.type='button';b.textContent=r[0]+' → '+r[1];if(!i)b.classList.add('on');b.addEventListener('click',function(){cur=i;routes.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');calc();});routes.appendChild(b);});
+  function fmt(n){return n.toLocaleString('en-US');}
+  function calc(){
+    var km=ROUTES[cur][2],listed=Math.max(100,Math.round(rate.value*km/10)*10),pct=+offer.value;
+    var drv=pct===100?listed:Math.max(Math.floor(listed/2),Math.round(listed*pct/100));
+    var fee=Math.round(drv*0.1);
+    document.getElementById('km').textContent=km;
+    document.getElementById('rateOut').textContent='Rs '+rate.value;
+    document.getElementById('offOut').textContent=pct===100?'—':pct+'% · Rs '+fmt(drv);
+    document.getElementById('drv').textContent=fmt(drv);
+    document.getElementById('fee').textContent=fmt(fee);
+    document.getElementById('tot').textContent=fmt(drv+fee);
+  }
+  rate.addEventListener('input',calc);offer.addEventListener('input',calc);calc();
+
+  // Language toggle: every element with data-ur swaps between its English content and the Urdu text.
+  var lang='en';
+  document.querySelectorAll('[data-ur]').forEach(function(el){el.dataset.en=el.innerHTML;});
+  function setLang(l){
+    lang=l;document.documentElement.classList.toggle('ur',l==='ur');document.documentElement.lang=l;
+    document.querySelectorAll('[data-ur]').forEach(function(el){el.innerHTML=l==='ur'?el.dataset.ur:el.dataset.en;});
+    document.querySelectorAll('.lang button').forEach(function(b){b.classList.toggle('on',b.dataset.lang===l);});
+    try{localStorage.setItem('blacar-lang',l);}catch(e){}
+  }
+  document.querySelectorAll('.lang button').forEach(function(b){b.addEventListener('click',function(){setLang(b.dataset.lang);});});
+  var q=new URLSearchParams(location.search).get('lang');
+  try{var saved=q||localStorage.getItem('blacar-lang');if(saved==='ur')setLang('ur');}catch(e){if(q==='ur')setLang('ur');}
+})();
+</script>
+</body>
+</html>
